@@ -2,10 +2,11 @@ FROM fedora:32 as build
 
 RUN dnf install --nogpgcheck -y \
     kernel-headers systemd-devel libgcrypt-devel rpm-devel file-devel file libcap-ng-devel \
-    libseccomp-devel lmdb-devel python3-devel gcc autoconf automake libtool uthash-devel make rpm-build
+    libseccomp-devel lmdb-devel python3-devel gcc git autoconf automake libtool uthash-devel make rpm-build
 
 WORKDIR /tmp/fapolicyd
-COPY . .
+RUN git clone https://github.com/linux-application-whitelisting/fapolicyd.git /tmp/fapolicyd
+
 RUN ./autogen.sh \
  && ./configure --with-audit --disable-shared \
  && make         \
