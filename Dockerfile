@@ -21,13 +21,15 @@ RUN du -sh /root/rpmbuild/RPMS/x86_64/fapolicyd-1.*.rpm
 
 FROM fedora:32
 
-RUN dnf install --nogpgcheck -y libgcrypt rpm file libcap-ng libseccomp lmdb python3
+RUN dnf install --nogpgcheck -y libgcrypt rpm file libcap-ng libseccomp lmdb python3 \
+ && dnf clean all
 
 COPY --from=build /root/rpmbuild/RPMS/x86_64/fapolicyd-1.*.rpm /tmp
 RUN rpm -i /tmp/fapolicyd-*.rpm
 RUN systemctl enable fapolicyd
 
 RUN mkdir -p  /var/lib/fapolicyd /run/fapolicyd /var/log/fapolicyd \
- && chown fapolicyd:0 /var/lib/fapolicyd /run/fapolicyd /var/log/fapolicyd
+ && touch /var/lib/fapolicyd/data.mdb /var/lib/fapolicyd/lock.mdb  \
+ && chown -R fapolicyd:0 /var/lib/fapolicyd /run/fapolicyd /var/log/fapolicyd
 
 CMD [ "/sbin/init" ]
