@@ -27,4 +27,7 @@ COPY --from=build /root/rpmbuild/RPMS/x86_64/fapolicyd-1.*.rpm /tmp
 RUN rpm -i /tmp/fapolicyd-*.rpm
 RUN systemctl enable fapolicyd
 
+RUN mkdir -p  /var/lib/fapolicyd /run/fapolicyd /var/log/fapolicyd \
+ && chown fapolicyd:0 /var/lib/fapolicyd /run/fapolicyd /var/log/fapolicyd
+
 CMD [ "/sbin/init" ]
